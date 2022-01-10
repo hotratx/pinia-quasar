@@ -38,15 +38,14 @@
 import { defineComponent, ref, reactive } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
-import { useAuthUser } from '../composables/UserAuthUser'
+import { useStore } from '../store/useAuthUser'
 
 export default defineComponent({
   name: 'PageRegister',
 
   setup() {
     const router = useRouter()
-
-    const { handleSignup } = useAuthUser()
+    const store = useStore()
 
     const form = ref<Credentials>({
       email: '',
@@ -56,10 +55,10 @@ export default defineComponent({
 
     const handleRegister = async () => {
       try {
-        await handleSignup(form.value)
+        await store.handleSignup(form.value)
         await router.push({
-        name: 'email-confirmation',
-        query: { email: form.value.email }
+          name: 'email-confirmation',
+          query: { email: form.value.email }
         })
       } catch (error) {
         console.log('error no Login', error)

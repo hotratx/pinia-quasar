@@ -15,7 +15,17 @@
           Quasar App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          <q-btn-dropdown fab-mini flat color="white" icon="person">
+            <q-list>
+              <q-item clickable v-close-popup >
+                <q-item-section>
+                  <q-item-label @click="Logout">Logout</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -47,6 +57,11 @@
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '../store/useAuthUser'
+import { defineComponent, ref } from 'vue'
+import { useQuasar } from 'quasar'
+
 
 const linksList = [
   {
@@ -93,7 +108,6 @@ const linksList = [
   }
 ];
 
-import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -103,9 +117,37 @@ export default defineComponent({
   },
 
   setup () {
+
+    const $q = useQuasar()
+    const router = useRouter()
+    const store = useStore()
+
     const leftDrawerOpen = ref(false)
 
+    const deslogar: () => void = async () => {
+      try {
+        await store.handleLogout()
+        await router.push({
+          name: 'login'
+        })
+      } catch (error) {
+        console.log('Error no logout')
+        return
+      }
+    }
+
+    const Logout = () => {
+      $q.dialog({
+        title: 'Logout',
+        message: 'Você quer deslogar?',
+        cancel: true,
+        persistent: true
+      }).onOk(deslogar)
+     }
+
+
     return {
+      Logout,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {

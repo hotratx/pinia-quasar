@@ -1,21 +1,21 @@
 <template>
  <q-page padding>
   <p>
-    Olá {{ userSession.user_metadata.name }}
+    Olá {{ store.user.profile }}
   </p>
  </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useAuthUser } from '../composables/UserAuthUser'
+import { useStore } from '../store/useAuthUser'
 
 export default defineComponent({
   name: 'PageMe',
   setup() {
-    const { userSession } = useAuthUser()
+    const store = useStore()
     return {
-      userSession
+      store
     }
   }
 })

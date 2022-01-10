@@ -42,15 +42,14 @@
 import { defineComponent, ref, reactive } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
-import { useAuthUser } from '../composables/UserAuthUser'
+import { useStore } from '../store/useAuthUser'
 
 export default defineComponent({
   name: 'PageIndex',
 
   setup() {
     const router = useRouter()
-
-    const { handleLogin } = useAuthUser()
+    const store = useStore()
 
     const form = ref<Credentials>({
       email: '',
@@ -59,7 +58,12 @@ export default defineComponent({
 
     const Login = async () => {
       try {
-        await handleLogin(form.value)
+        await store.handleLogin(form.value)
+          .then(() => console.log('SUCESSSO', store.getAccount))
+        
+        await router.push({
+          name: 'me'
+        })
       } catch (error) {
         console.log('error no Login', error)
       }
