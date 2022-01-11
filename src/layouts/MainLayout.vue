@@ -1,16 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
+    <q-header elevated class="bg-black">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
+      <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title>
           Quasar App
         </q-toolbar-title>
@@ -30,9 +22,18 @@
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
+      v-model="drawer"
       show-if-above
+
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+
+      
+      :width="270"
+      :breakpoint="500"
       bordered
+      class="bg-grey-3"
     >
       <q-list>
         <q-item-label
@@ -123,6 +124,8 @@ export default defineComponent({
     const store = useStore()
 
     const leftDrawerOpen = ref(false)
+    const drawer = ref(false)
+    const miniState = ref(true)
 
     const deslogar: () => void = async () => {
       try {
@@ -147,6 +150,8 @@ export default defineComponent({
 
 
     return {
+      drawer,
+      miniState,
       Logout,
       essentialLinks: linksList,
       leftDrawerOpen,

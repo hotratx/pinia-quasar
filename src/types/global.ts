@@ -9,3 +9,10 @@ export interface DataLogin {
   email: string
   password: string
 }
+
+export type LocationQueryValue = string | null
+
+export type LocationQuery = Record<
+  string,
+  LocationQueryValue | LocationQueryValue[]
+>

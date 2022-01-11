@@ -6,6 +6,7 @@ import {
   createWebHistory,
 } from 'vue-router';
 import routes from './routes';
+import { useStore } from '../store/useAuthUser'
 
 /*
  * If not building with SSR mode, you can
@@ -33,5 +34,18 @@ export default route(function (/* { store, ssrContext } */) {
     ),
   });
 
+  Router.beforeEach((to) => {
+    const store = useStore()
+
+    if (
+      to.hash.includes('type=recovery') &&
+      to.name !== 'reset-password'
+    ) {
+      const accessToken = to.hash.split('&')[0]
+      const token = accessToken.replace('#access_token=', '')
+      return  { name: 'reset-password', query: { token } }
+    }
+  })
+  
   return Router;
 });

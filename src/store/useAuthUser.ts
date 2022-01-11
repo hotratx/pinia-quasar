@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import useSupabase from 'boot/supabase'
 import { Credentials } from '../types/global'
 import { Provider } from '@supabase/gotrue-js/dist/main/lib/types'
-import { abort } from 'process';
 
 
 const { supabase } = useSupabase()
@@ -37,38 +36,37 @@ export const useStore = defineStore('authUser', {
   actions: {
     updateUser (data: typeUser) {
       this.user = data
+      this.isLogging = true
+    },
+    logoutUser () {
+      this.user = 'asdf'
+      this.isLogging = false
     },
     async handleLogin(credentials: Credentials) {
-      try {
-        const { error, user } = await supabase.auth.signIn({
-          email: credentials.email,
-          password: credentials.password,
-        })
-        if (error) {
-          alert('Error logging in: ' + error.message)
+      const { error, user } = await supabase.auth.signIn({
+        email: credentials.email,
+        password: credentials.password,
+      })
+      if (error) {
+        console.log('temmm errrorr')
+        throw error.message
+      }
+      // No error throw, but no user detected so send magic link
+      if (!error && !user) {
+        throw 'error ao tentar logar'
+      }
+      if (user) {
+        if (user.email && user.role && user.id && user.user_metadata) {
+          
+          const { email, id, role, user_metadata } = user
+          const dados: typeUser = {
+            email,
+            id,
+            role,
+            profile: user_metadata
+           }
+          this.updateUser(dados)
         }
-        // No error throw, but no user detected so send magic link
-        if (!error && !user) {
-          alert('Check your email for the login link!')
-        }
-        console.log('store mostra resposa user:', user)
-        console.log('user_metadata:', typeof(user?.user_metadata))
-        if (user) {
-          if (user.email && user.role && user.id && user.user_metadata) {
-            
-            const { email, id, role, user_metadata } = user
-            const dados: typeUser = {
-              email,
-              id,
-              role,
-              profile: user_metadata
-             }
-            this.updateUser(dados)
-          }
-        }
-      } catch (error) {
-        console.error('Error thrown:', error)
-        alert(error)
       }
     },
     async handleSignup(credentials: Credentials) {
@@ -120,8 +118,7 @@ export const useStore = defineStore('authUser', {
         alert('Error updating user info: ')
       }
     },
-    async handlePasswordReset() {
-      const email = prompt('Please enter your email:')
+    async handlePasswordResetEmail(email: string) {
       if (!email) {
         window.alert('Email address is required.')
       } else {
@@ -131,6 +128,19 @@ export const useStore = defineStore('authUser', {
         } else {
           alert('Password recovery email has been sent.')
         }
+      }
+    },
+    async resetPassword(jwt: string, password: string) {
+      const { user, error } = await supabase.auth.api.updateUser(
+        jwt,
+        { password: password }
+      )
+      if (error) {
+        console.log('error reset password')
+        throw error
+      } else {
+        console.log('success reset password')
+        return user
       }
     },
     async handleOAuthLogin(provider: Provider) {

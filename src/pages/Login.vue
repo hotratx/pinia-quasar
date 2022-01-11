@@ -8,28 +8,38 @@
         <q-input 
           label="Email"
           v-model="form.email" 
+          lazy-rules
+          :rules="[val => (val && val.length > 5) || 'Email é requerido']"
         />
         <q-input 
           label="Password"
           v-model="form.password" 
         />
 
-        <div class="full-width q-pt-md">
+        <div class="full-width q-pt-md q-gutter-y-sm">
          <q-btn
           label="login"
           color="primary"
           class="full-width"
           type="submit"
         />
-        </div>
-        <div class="full-width">
          <q-btn
           label="Register"
           color="primary"
           class="full-width"
           type="submit"
-          to="{ name: register }"
+          flat
+          :to="{ name: 'register' }"
         />
+         <q-btn
+          label="Forgot Password"
+          color="primary"
+          class="full-width"
+          type="submit"
+          flat
+          :to="{ name: 'forgot-password' }"
+        />
+
         </div>
 
       </div>
@@ -39,17 +49,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store/useAuthUser'
+import useNotify from 'src/composables/UseNotify'
 
 export default defineComponent({
   name: 'PageIndex',
 
   setup() {
+    const { notifySuccess, notifyError } = useNotify()
+    
     const router = useRouter()
     const store = useStore()
+
+    onMounted(() => {
+      if (store.isLogging)
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        router.push({
+          name: 'me'
+        })
+    })
 
     const form = ref<Credentials>({
       email: '',
@@ -59,13 +80,21 @@ export default defineComponent({
     const Login = async () => {
       try {
         await store.handleLogin(form.value)
-          .then(() => console.log('SUCESSSO', store.getAccount))
-        
-        await router.push({
-          name: 'me'
-        })
+          .then(() => {
+            console.log('SUCESSSO', store.getAccount)
+            // ou posso usar void na frente do push
+            notifySuccess()
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            router.push({
+                name: 'me'
+            })
+      })
       } catch (error) {
-        console.log('error no Login', error)
+        if (typeof error === 'string') {
+          notifyError(error)
+        } else {
+          console.log('error no Login', error)
+        }
       }
 
     }

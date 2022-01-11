@@ -1,27 +1,17 @@
 <template>
  <q-page padding>
-   <q-form class="row justify-center" @submit.prevent="handleRegister">
+   <q-form class="row justify-center" @submit.prevent="handleForgotPassword">
       <p class="col-12 text-h5 text-center">
         Register
       </p>
       <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
         <q-input 
-          label="Name"
-          v-model="form.username" 
-        />
-        <q-input 
           label="Email"
           v-model="form.email" 
         />
-
-        <q-input 
-          label="Password"
-          v-model="form.password" 
-        />
-
         <div class="full-width q-gutter-y-sm">
          <q-btn
-          label="Register"
+          label="Send Reset Email"
           color="primary"
           class="full-width"
           type="submit"
@@ -44,26 +34,23 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'
-import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store/useAuthUser'
 
 export default defineComponent({
-  name: 'PageRegister',
+  name: 'PagePasswordReset',
 
   setup() {
     const router = useRouter()
     const store = useStore()
 
-    const form = ref<Credentials>({
+    const form = ref({
       email: '',
-      password: '',
-      username: ''
     })
 
-    const handleRegister = async () => {
+    const handleForgotPassword = async () => {
       try {
-        await store.handleSignup(form.value)
+        await store.handlePasswordResetEmail(form.value.email)
         await router.push({
           name: 'email-confirmation',
           query: { email: form.value.email }
@@ -75,7 +62,7 @@ export default defineComponent({
 
     return {
       form,
-      handleRegister
+      handleForgotPassword
     }
   }
 })
