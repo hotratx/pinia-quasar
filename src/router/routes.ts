@@ -20,6 +20,12 @@ const routes: RouteRecordRaw[] = [
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
       { path: 'me', name: 'me', component: () => import('pages/Me.vue') }
     ],
+    meta: {
+      // estas rotas precisam estar com isLogging true
+      // as rotas de cima que não tem este meta o resultado será sempre falso
+      // logo o primeiro if fo Router.beforeEach será falso, levando a página de login.
+      requiresAuth: true
+    }
   },
 
   // Always leave this as last one,

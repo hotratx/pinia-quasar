@@ -38,6 +38,16 @@ export default route(function (/* { store, ssrContext } */) {
     const store = useStore()
 
     if (
+      !store.isLogging &&
+      to.meta.requiresAuth
+      //se a url contiver o 'fromEmail' então pulará esta verificação
+      //ou seja, toda rota com o 'fromEmail' terá permissão para passar esta verificação.
+      //&& !Object.keys(to.query).includes('fromEmail')
+    ) {
+      return { name: 'login'}
+    }
+
+    if (
       to.hash.includes('type=recovery') &&
       to.name !== 'reset-password'
     ) {

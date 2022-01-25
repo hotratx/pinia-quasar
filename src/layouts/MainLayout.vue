@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated class="bg-black">
+    <q-header elevated>
       <q-toolbar>
       <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title>
@@ -130,7 +130,7 @@ export default defineComponent({
     const deslogar: () => void = async () => {
       try {
         await store.handleLogout()
-        await router.push({
+        await router.replace({
           name: 'login'
         })
       } catch (error) {

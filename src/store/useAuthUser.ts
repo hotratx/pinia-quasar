@@ -15,7 +15,7 @@ interface typeUser {
   profile?: { [key:  string]: string }
 }
 
-type AccountInfo = null | typeUser | string
+type AccountInfo = null | typeUser
 
 interface State {
   user: AccountInfo
@@ -25,25 +25,31 @@ interface State {
 
 export const useStore = defineStore('authUser', {
   state: (): State => ({
-    user: 'asdf',
+    user: null,
     isLogging: false
   }),
+
   getters: {
-    getAccount(): AccountInfo {
-      return this.user
+    getAccount(): null | string {
+      if (this.user) {
+        return this.user.email
+      }
+      return null
     }
   },
+
   actions: {
     updateUser (data: typeUser) {
       this.user = data
       this.isLogging = true
     },
     logoutUser () {
-      this.user = 'asdf'
+      this.user = null
       this.isLogging = false
     },
-    async handleLogin(credentials: Credentials) {
-      const { error, user } = await supabase.auth.signIn({
+
+    async handleLogin(credentials: Credentials) {//{{{
+      const { error , user } = await supabase.auth.signIn({
         email: credentials.email,
         password: credentials.password,
       })
@@ -68,8 +74,9 @@ export const useStore = defineStore('authUser', {
           this.updateUser(dados)
         }
       }
-    },
-    async handleSignup(credentials: Credentials) {
+    },//}}}
+
+    async handleSignup(credentials: Credentials) {//{{{
       try {
         const { email, password, username } = credentials
         // prompt user if they have not filled populated their credentials
@@ -92,20 +99,23 @@ export const useStore = defineStore('authUser', {
         console.error('signup error', error)
         throw new Error('error no catch')
       }
-    },
-    async handleLogout() {
+    },//}}}
+
+    async handleLogout() {//{{{
       try {
         const { error } = await supabase.auth.signOut()
         if (error) {
           console.error('Error', error)
           throw new Error('error no catch')
         }
+        this.logoutUser()
       } catch (err) {
         console.error('Error')
         throw new Error('error no catch')
       }
-    },
-    async handleUpdateUser(credentials: Credentials) {
+    },//}}}
+
+    async handleUpdateUser(credentials: Credentials) {//{{{
       try {
         const { error } = await supabase.auth.update(credentials)
         if (error) {
@@ -117,8 +127,9 @@ export const useStore = defineStore('authUser', {
       } catch (error) {
         alert('Error updating user info: ')
       }
-    },
-    async handlePasswordResetEmail(email: string) {
+    },//}}}
+
+    async handlePasswordResetEmail(email: string) {//{{{
       if (!email) {
         window.alert('Email address is required.')
       } else {
@@ -129,8 +140,9 @@ export const useStore = defineStore('authUser', {
           alert('Password recovery email has been sent.')
         }
       }
-    },
-    async resetPassword(jwt: string, password: string) {
+    },//}}}
+
+    async resetPassword(jwt: string, password: string) {//{{{
       const { user, error } = await supabase.auth.api.updateUser(
         jwt,
         { password: password }
@@ -142,10 +154,11 @@ export const useStore = defineStore('authUser', {
         console.log('success reset password')
         return user
       }
-    },
-    async handleOAuthLogin(provider: Provider) {
+    },//}}}
+
+    async handleOAuthLogin(provider: Provider) {//{{{
       const { error } = await supabase.auth.signIn({ provider })
       if (error) console.error('Error: ', error.message)
-    }
+    }//}}}
   }
 });

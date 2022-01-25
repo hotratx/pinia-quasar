@@ -1,7 +1,7 @@
 <template>
  <q-page padding>
   <p>
-    Olá {{ store.user.profile }}
+    Olá {{ store.user }}
   </p>
  </q-page>
 </template>

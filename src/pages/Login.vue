@@ -56,7 +56,7 @@ import { useStore } from '../store/useAuthUser'
 import useNotify from 'src/composables/UseNotify'
 
 export default defineComponent({
-  name: 'PageIndex',
+  name: 'PageLogin',
 
   setup() {
     const { notifySuccess, notifyError } = useNotify()
@@ -80,18 +80,17 @@ export default defineComponent({
     const Login = async () => {
       try {
         await store.handleLogin(form.value)
-          .then(() => {
-            console.log('SUCESSSO', store.getAccount)
-            // ou posso usar void na frente do push
-            notifySuccess()
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            router.push({
-                name: 'me'
-            })
-      })
-      } catch (error) {
-        if (typeof error === 'string') {
-          notifyError(error)
+        console.log('SUCESSSO', store.getAccount)
+        // ou posso usar void na frente do push
+        // caso usamos then()
+        notifySuccess()
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        void router.push({
+            name: 'me'
+        })
+    } catch (error) {
+      if (typeof error === 'string') {
+        notifyError(error)
         } else {
           console.log('error no Login', error)
         }

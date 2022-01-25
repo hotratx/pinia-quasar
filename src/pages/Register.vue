@@ -20,22 +20,21 @@
         />
 
         <div class="full-width q-gutter-y-sm">
-         <q-btn
-          label="Register"
-          color="primary"
-          class="full-width"
-          type="submit"
-        />
-        <q-btn
-          label="Back"
-          color="primary"
-          class="full-width"
-          type="submit"
-          flat
-          :to="{ name: 'login' }"
-        />
+          <q-btn
+            label="Register"
+            color="primary"
+            class="full-width"
+            type="submit"
+          />
+          <q-btn
+            label="Back"
+            color="primary"
+            class="full-width"
+            type="submit"
+            flat
+            :to="{ name: 'login' }"
+          />
         </div>
-
       </div>
    </q-form>
    {{ form.email }}
@@ -43,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store/useAuthUser'

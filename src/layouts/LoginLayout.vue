@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
-          Quasar App
+          Agenda Pacientes
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
