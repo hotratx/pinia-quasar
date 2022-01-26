@@ -9,7 +9,8 @@
           label="Email"
           v-model="form.email" 
           lazy-rules
-          :rules="[val => (val && val.length > 5) || 'Email é requerido']"
+          :rules="[val => isEmail(val) || 'Email é requerido']"
+          type="email"
         />
         <q-input 
           label="Password"
@@ -54,6 +55,8 @@ import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store/useAuthUser'
 import useNotify from 'src/composables/UseNotify'
+import isEmail from 'src/composables/typeCheck'
+
 
 export default defineComponent({
   name: 'PageLogin',
@@ -83,7 +86,7 @@ export default defineComponent({
         console.log('SUCESSSO', store.getAccount)
         // ou posso usar void na frente do push
         // caso usamos then()
-        notifySuccess()
+        notifySuccess('Voce logou com sucesso!!')
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         void router.push({
             name: 'me'
@@ -95,12 +98,12 @@ export default defineComponent({
           console.log('error no Login', error)
         }
       }
-
     }
 
     return {
       form,
-      Login
+      Login,
+      isEmail
     }
   }
 })

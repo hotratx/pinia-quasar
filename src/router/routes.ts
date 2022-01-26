@@ -18,7 +18,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
-      { path: 'me', name: 'me', component: () => import('pages/Me.vue') }
+      { path: 'me', name: 'me', component: () => import('pages/Me.vue') },
+      { path: 'pacientes', name: 'pacientes', component: () => import('pages/pacientes/List.vue') },
     ],
     meta: {
       // estas rotas precisam estar com isLogging true

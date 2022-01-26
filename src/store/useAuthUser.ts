@@ -61,18 +61,15 @@ export const useStore = defineStore('authUser', {
       if (!error && !user) {
         throw 'error ao tentar logar'
       }
-      if (user) {
-        if (user.email && user.role && user.id && user.user_metadata) {
-          
-          const { email, id, role, user_metadata } = user
-          const dados: typeUser = {
-            email,
-            id,
-            role,
-            profile: user_metadata
-           }
-          this.updateUser(dados)
-        }
+      if (user?.email && user?.role && user?.id && user?.user_metadata) {
+        const { email, id, role, user_metadata } = user
+        const dados: typeUser = {
+          email,
+          id,
+          role,
+          profile: user_metadata
+         }
+        this.updateUser(dados)
       }
     },//}}}
 

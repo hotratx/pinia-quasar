@@ -4,7 +4,7 @@ import { useQuasar } from 'quasar'
 export default function useNotify() {
   const $q = useQuasar()
 
-  const notifySuccess = (message?: string) => {
+  const notifySuccess = (message?: string): void => {
     $q.notify({
       type: 'positive',
       message: message || 'Tudo Certo !'
