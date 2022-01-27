@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import useSupabase from 'boot/supabase'
 import { useStore } from 'src/store/useAuthUser'
-//import { Credentials } from '../types/global'
+import { PacientForm } from '../types/global'
 
 
 const { supabase } = useSupabase()
@@ -12,6 +12,7 @@ interface State {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dados: any[] | null
 }
+
 
 export const useApi = defineStore('useApi', {
   state: (): State => ({
@@ -32,6 +33,7 @@ export const useApi = defineStore('useApi', {
     },
 
     async getById(table: string, id: string) {
+      console.log('o id passado para o getById foi:', id)
       const { data, error } = await supabase
         .from(table)
         .select('*')
@@ -40,13 +42,11 @@ export const useApi = defineStore('useApi', {
         console.log('tem algum erro na busca getById')
         throw error.message
       }
-      if (data) {
-        this.dados = data
-      }
-      throw 'Não retornou nenhum dado do getById'
+      this.dados = data
+      return data
     },
 
-    async post(table: string, form: []) {
+    async post(table: string, form: PacientForm) {
       const store = useStore()
       if (store.user) {
         const { data, error } = await supabase
@@ -57,7 +57,7 @@ export const useApi = defineStore('useApi', {
               user_id: store.user.id
             }
           ])
-        if (error) {
+        if (error?.message) {
           console.log('tem algum erro na busca getById')
           throw error.message
         }

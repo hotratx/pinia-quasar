@@ -10,9 +10,6 @@ export interface DataLogin {
   password: string
 }
 
-export type LocationQueryValue = string | null
-
-export type LocationQuery = Record<
-  string,
-  LocationQueryValue | LocationQueryValue[]
->
+export interface PacientForm {
+  name: string
+}

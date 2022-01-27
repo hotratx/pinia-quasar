@@ -84,7 +84,7 @@ export const useStore = defineStore('authUser', {
           { email, password },
           {
             data: {
-              firs_name: username,
+              first_name: username,
               age: 27
             }
           })

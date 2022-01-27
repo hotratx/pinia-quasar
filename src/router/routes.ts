@@ -20,6 +20,7 @@ const routes: RouteRecordRaw[] = [
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
       { path: 'me', name: 'me', component: () => import('pages/Me.vue') },
       { path: 'pacientes', name: 'pacientes', component: () => import('pages/pacientes/List.vue') },
+      { path: 'form-pacientes/:id?', name: 'form-pacientes', component: () => import('pages/pacientes/Form.vue') },
     ],
     meta: {
       // estas rotas precisam estar com isLogging true

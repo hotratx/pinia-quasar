@@ -10,7 +10,6 @@
           v-model="form.email" 
           lazy-rules
           :rules="[val => isEmail(val) || 'Email é requerido']"
-          type="email"
         />
         <q-input 
           label="Password"

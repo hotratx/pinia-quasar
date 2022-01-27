@@ -6,17 +6,24 @@
         :columns="columns"
         row-key="name"
         classs="col-md-4 col-sm-6 col-xs-10"
+        :loading="loading"
       >
         <template v-slot:top>
           <span class="text-h6">
             Pacientes
           </span>
           <q-space/>
-          <q-btn label="Add New" color='primary'></q-btn>
+          <q-btn 
+            label="Add New" 
+            color='primary' 
+            icon="mdi-plus" 
+            dense
+            :to="{ name: 'form-pacientes' }"
+          />
         </template>
         <template v-slot:body-cell-actions="props">
           <q-td :props="props" class="q-gutter-x-sm">
-            <q-btn icon='mdi-pencil-outline' color='info' dense size='sm'>
+            <q-btn icon='mdi-pencil-outline' color='info' dense size='sm' @click="handleEdit(props.row)">
               <q-tooltip>Edit</q-tooltip>
             </q-btn>
             <q-btn icon='mdi-delete-outline' color='negative' dense size='sm'>
@@ -66,25 +73,29 @@ const rows = [
   },
 ]
 
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import useNotify from 'src/composables/UseNotify'
 import { useApi } from 'src/store/userApi'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'PageListClientes',
   setup() {
+
+    const router = useRouter()
     const api = useApi()
     const { notifyError } = useNotify()
 
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     type Paciente = any[] | null
-    
     const pacientes = ref<Paciente>([])
+    const loading = ref(true)
+
 
     const handleListPacientes = async () => {
       try {
         pacientes.value = await api.listaPacientes('pacientes')
+        loading.value = false
         console.log('resposta da lista de pacientes: ', pacientes.value)
       } catch(error) {
         if (typeof error == 'string') {
@@ -93,13 +104,24 @@ export default defineComponent({
       }
     }
 
+    interface PacienteRow {
+      id: number
+      name: string
+    }
+    const handleEdit = (paciente: PacienteRow) => {
+      console.log('resultado da row: ', paciente.id)
+      void router.push({ name: 'form-pacientes', params: { id: paciente.id } })
+    }
+
     onMounted(() => {
       void handleListPacientes()
     })
 
     return {
       columns,
-      pacientes
+      pacientes,
+      loading,
+      handleEdit
     }
   }
 })
