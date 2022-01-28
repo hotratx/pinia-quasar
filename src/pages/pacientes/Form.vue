@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { PacientForm } from 'src/types/global'
+import { Pacientes } from 'src/types/global'
 import { useRouter, useRoute } from 'vue-router'
 import { useApi } from 'src/store/userApi'
 import useNotify from 'src/composables/UseNotify'
@@ -51,7 +51,7 @@ export default defineComponent({
 
     const isUpdate = computed(() => route.params.id)
 
-    const form = ref<PacientForm>({
+    const form = ref<Pacientes>({
       name: ''
     })
 

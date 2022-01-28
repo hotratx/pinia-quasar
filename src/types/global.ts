@@ -1,3 +1,9 @@
+export interface Pacientes {
+  id?: number
+  user_id?: string
+  name?: string
+}
+
 export interface Credentials {
   email?: string | undefined
   password?: string | undefined
@@ -8,8 +14,4 @@ export interface Credentials {
 export interface DataLogin {
   email: string
   password: string
-}
-
-export interface PacientForm {
-  name: string
 }

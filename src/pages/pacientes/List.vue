@@ -2,7 +2,7 @@
  <q-page padding>
     <div class="q-pa-md">
       <q-table
-        :rows="pacientes"
+        :rows="allPacientes"
         :columns="columns"
         row-key="name"
         classs="col-md-4 col-sm-6 col-xs-10"
@@ -59,24 +59,11 @@ const columns = [
   { name: 'actions', align: 'center', label: 'Actions', field: 'fat', sortable: true },
 ]
 
-
-const rows = [
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-    fat: 6.0,
-  },
-  {
-    name: 'Ice cream sandwich',
-    calories: 237,
-    fat: 9.0,
-  },
-]
-
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import useNotify from 'src/composables/UseNotify'
 import { useApi } from 'src/store/userApi'
 import { useRouter } from 'vue-router'
+import { Pacientes } from 'src/types/global'
 
 export default defineComponent({
   name: 'PageListClientes',
@@ -86,17 +73,17 @@ export default defineComponent({
     const api = useApi()
     const { notifyError } = useNotify()
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    type Paciente = any[] | null
-    const pacientes = ref<Paciente>([])
     const loading = ref(true)
+
+
+    const allPacientes = ref<Pacientes[]>([])
 
 
     const handleListPacientes = async () => {
       try {
-        pacientes.value = await api.listaPacientes('pacientes')
+        allPacientes.value = await api.listaPacientes('pacientes')
         loading.value = false
-        console.log('resposta da lista de pacientes: ', pacientes.value)
+        console.log('resposta da lista de pacientes: ', allPacientes.value)
       } catch(error) {
         if (typeof error == 'string') {
           notifyError(error)
@@ -119,7 +106,7 @@ export default defineComponent({
 
     return {
       columns,
-      pacientes,
+      allPacientes,
       loading,
       handleEdit
     }

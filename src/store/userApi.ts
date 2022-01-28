@@ -1,23 +1,18 @@
 import { defineStore } from 'pinia';
 import useSupabase from 'boot/supabase'
 import { useStore } from 'src/store/useAuthUser'
-import { PacientForm } from '../types/global'
-
-
-const { supabase } = useSupabase()
+import { Pacientes } from '../types/global'
 
 interface State {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pacientes: any[] | null
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dados: any[] | null
+  pacientes: Pacientes[]
 }
 
+let allPacientes: Pacientes[] = []
+const { supabase } = useSupabase()
 
 export const useApi = defineStore('useApi', {
   state: (): State => ({
-    pacientes: null,
-    dados: null
+    pacientes: [],
   }),
   actions: {
     async listaPacientes(table: string) {
@@ -28,8 +23,14 @@ export const useApi = defineStore('useApi', {
         console.log('tem algum erro na busca listaPacientes')
         throw error.message
       }
-      this.pacientes = data
-      return data 
+      if (data === null) {
+        allPacientes = []
+        throw 'Nenhum dado recebido'
+      }
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      allPacientes = data
+      this.pacientes = allPacientes
+      return allPacientes
     },
 
     async getById(table: string, id: string) {
@@ -42,11 +43,10 @@ export const useApi = defineStore('useApi', {
         console.log('tem algum erro na busca getById')
         throw error.message
       }
-      this.dados = data
       return data
     },
 
-    async post(table: string, form: PacientForm) {
+    async post(table: string, form: Pacientes) {
       const store = useStore()
       if (store.user) {
         const { data, error } = await supabase
