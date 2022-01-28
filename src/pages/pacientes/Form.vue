@@ -48,16 +48,10 @@ export default defineComponent({
     const api = useApi()
 
     const table = 'pacientes' 
-
     const isUpdate = computed(() => route.params.id)
-
     const form = ref<Pacientes>({
       name: ''
     })
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    type Paciente = any[] | null
-    const paciente = ref<Paciente>([])
 
     onMounted(() => {
       if (isUpdate.value) {
@@ -81,13 +75,7 @@ export default defineComponent({
 
     const handleGetPaciente = async (id: string) => {
       try {
-        paciente.value = await api.getById(table, id)
-        console.log(`paciente.value: ${JSON.stringify(paciente.value)}`)
-        if (paciente.value) {
-          console.log(`paciente.value: ${JSON.stringify(paciente.value[0])}`)
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          form.value = paciente.value[0]
-        }
+        form.value = await api.getById(table, id)
       } catch(error) {
         if ( typeof error === 'string' ) {
           console.log(`algum erro no handleGetPaciente: ${error}`)

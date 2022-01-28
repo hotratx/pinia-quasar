@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import useSupabase from 'boot/supabase'
 import { Credentials } from '../types/global'
-import { Provider } from '@supabase/gotrue-js/dist/main/lib/types'
+import { Provider, User } from '@supabase/gotrue-js/dist/main/lib/types'
 
 
 const { supabase } = useSupabase()
@@ -9,24 +9,28 @@ const { supabase } = useSupabase()
 
 
 interface typeUser {
-  id: string
-  role: string
+  id?: string
+  role?: string
   email: string
   profile?: { [key:  string]: string }
 }
 
+
 type AccountInfo = null | typeUser
+type NewUser = null | User
 
 interface State {
   user: AccountInfo
   isLogging: boolean
+  newUser: NewUser
 }
 
 
 export const useStore = defineStore('authUser', {
   state: (): State => ({
     user: null,
-    isLogging: false
+    isLogging: false,
+    newUser: null
   }),
 
   getters: {
@@ -69,6 +73,7 @@ export const useStore = defineStore('authUser', {
           role,
           profile: user_metadata
          }
+        this.newUser = user
         this.updateUser(dados)
       }
     },//}}}

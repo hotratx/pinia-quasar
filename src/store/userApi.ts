@@ -3,12 +3,15 @@ import useSupabase from 'boot/supabase'
 import { useStore } from 'src/store/useAuthUser'
 import { Pacientes } from '../types/global'
 
+
+const { supabase } = useSupabase()
+
 interface State {
   pacientes: Pacientes[]
 }
 
 let allPacientes: Pacientes[] = []
-const { supabase } = useSupabase()
+let onePaciente: Pacientes
 
 export const useApi = defineStore('useApi', {
   state: (): State => ({
@@ -43,7 +46,12 @@ export const useApi = defineStore('useApi', {
         console.log('tem algum erro na busca getById')
         throw error.message
       }
-      return data
+      if (data) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        onePaciente = data[0]
+        return onePaciente
+      }
+      throw 'error fetch getById'
     },
 
     async post(table: string, form: Pacientes) {
