@@ -56,12 +56,13 @@ export const useApi = defineStore('useApi', {
 
     async post(table: string, form: Pacientes) {
       const store = useStore()
+      console.log(`form.name: ${JSON.stringify(form)}`)
       if (store.user) {
         const { data, error } = await supabase
           .from(table)
           .insert([
             {
-              ...form,
+              name: form.name,
               user_id: store.user.id
             }
           ])
@@ -70,6 +71,34 @@ export const useApi = defineStore('useApi', {
           throw error.message
         }
         console.log('post sucesso!')
+      }
+    },
+
+    async remove(table: string, id: number) {
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .match({ id: id})
+      if ( error ) {
+        console.log(`error no remove id: ${id}`)
+        throw  error.message
+      }
+    },
+
+    async update(table: string, form: Pacientes) {
+      console.log('update ')
+      const { data, error } = await supabase
+        .from(table)
+        .update({ ...form })
+        .match({ id: form.id }) 
+      if ( error ) {
+        console.log('erro no update userApi')
+        throw error.message
+      }
+      if ( data ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        onePaciente = data[0]
+        console.log(`update feito com sucesso ${JSON.stringify(onePaciente)}`)
       }
     }
   }

@@ -26,7 +26,7 @@
             <q-btn icon='mdi-pencil-outline' color='info' dense size='sm' @click="handleEdit(props.row)">
               <q-tooltip>Edit</q-tooltip>
             </q-btn>
-            <q-btn icon='mdi-delete-outline' color='negative' dense size='sm'>
+            <q-btn icon='mdi-delete-outline' color='negative' dense size='sm' @click="handleRemovePaciente(props.row)">
               <q-tooltip>Remove</q-tooltip>
             </q-btn>
           </q-td>
@@ -63,27 +63,33 @@ import { defineComponent, ref, onMounted, computed } from 'vue'
 import useNotify from 'src/composables/UseNotify'
 import { useApi } from 'src/store/userApi'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 import { Pacientes } from 'src/types/global'
 
 export default defineComponent({
   name: 'PageListClientes',
   setup() {
 
+    interface PacienteRow {
+      id: number
+      name: string
+    }
+
     const router = useRouter()
     const api = useApi()
-    const { notifyError } = useNotify()
+    const $q = useQuasar()
+    const { notifyError, notifySuccess } = useNotify()
 
+    const table = 'pacientes'
     const loading = ref(true)
-
-
     const allPacientes = ref<Pacientes[]>([])
 
 
     const handleListPacientes = async () => {
       try {
-        allPacientes.value = await api.listaPacientes('pacientes')
+        loading.value = true
+        allPacientes.value = await api.listaPacientes(table)
         loading.value = false
-        console.log('resposta da lista de pacientes: ', allPacientes.value)
       } catch(error) {
         if (typeof error == 'string') {
           notifyError(error)
@@ -91,13 +97,28 @@ export default defineComponent({
       }
     }
 
-    interface PacienteRow {
-      id: number
-      name: string
-    }
     const handleEdit = (paciente: PacienteRow) => {
-      console.log('resultado da row: ', paciente.id)
       void router.push({ name: 'form-pacientes', params: { id: paciente.id } })
+    }
+
+    const handleRemovePaciente = (paciente: PacienteRow) => {
+      const remove: () => void = async () => {
+        await api.remove(table, paciente.id)
+        notifySuccess('Paciente removido')
+      }
+
+      try {
+        $q.dialog({
+          title: 'Confirmar',
+          message: `Quer remover o paciente ${paciente.name}`,
+          cancel: true,
+          persistent: true
+        }).onOk(remove)
+      } catch(error) {
+        if (typeof error == 'string') {
+          notifyError(error)
+        }
+      }
     }
 
     onMounted(() => {
@@ -108,7 +129,8 @@ export default defineComponent({
       columns,
       allPacientes,
       loading,
-      handleEdit
+      handleEdit,
+      handleRemovePaciente
     }
   }
 })

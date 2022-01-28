@@ -13,7 +13,7 @@
           :rules="[val => (val && val.length > 3) || 'Nome é obrigatorio']"
         />
         <q-btn 
-          label="Save"
+          :label="isUpdate ? 'Update' : 'Save' "
           color="primary"
           class="full-width"
           type="submit"
@@ -42,15 +42,17 @@ export default defineComponent({
   name: 'PageFormPacientes',
   setup() {
 
-    const { notifyError, notifySuccess } = useNotify()
     const route = useRoute()
     const router = useRouter()
     const api = useApi()
+    const { notifyError, notifySuccess } = useNotify()
+
+    const isUpdate = computed(() => route.params.id)
 
     const table = 'pacientes' 
-    const isUpdate = computed(() => route.params.id)
     const form = ref<Pacientes>({
-      name: ''
+      name: '',
+      id: null
     })
 
     onMounted(() => {
@@ -63,8 +65,13 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       try {
-        await api.post(table, form.value)
-        notifySuccess('Adicionar paciente com sucesso!')
+        if (isUpdate.value) {
+          await api.update(table, form.value)
+          notifySuccess('Update do paciente!')
+        } else {
+          await api.post(table, form.value)
+          notifySuccess('Paciente adicionado!')
+        }
         await router.push({ name: 'pacientes' })
       } catch(error) {
         if ( typeof error === 'string' ) {
@@ -86,7 +93,8 @@ export default defineComponent({
 
     return {
       form,
-      handleSubmit
+      handleSubmit,
+      isUpdate
     }
   },
 })

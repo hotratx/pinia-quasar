@@ -1,7 +1,7 @@
 export interface Pacientes {
-  id?: number
+  id?: number | null
   user_id?: string
-  name?: string
+  name: string
 }
 
 export interface Credentials {
