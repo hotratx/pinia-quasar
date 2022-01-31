@@ -25,13 +25,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useStore } from '../store/useAuthUser'
+import { useAuth } from '../store/useAuthUser'
 
 export default defineComponent({
   name: 'PageResetPassword',
 
   setup() {
-    const store = useStore()
+    const store = useAuth()
 
     const router = useRouter() // usado para fazer redirecionanmento do user
     const route = useRoute() // pega a rota atual

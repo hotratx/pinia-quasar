@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import useSupabase from 'boot/supabase'
-import { useStore } from 'src/store/useAuthUser'
+import { useAuth } from 'src/store/useAuthUser'
 import { Pacientes } from '../types/global'
 
 
@@ -55,15 +55,15 @@ export const useApi = defineStore('useApi', {
     },
 
     async post(table: string, form: Pacientes) {
-      const store = useStore()
+      const auth = useAuth()
       console.log(`form.name: ${JSON.stringify(form)}`)
-      if (store.user) {
+      if (auth.user) {
         const { data, error } = await supabase
           .from(table)
           .insert([
             {
               name: form.name,
-              user_id: store.user.id
+              user_id: auth.user.id
             }
           ])
         if (error?.message) {

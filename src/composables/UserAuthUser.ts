@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import useSupabase from 'boot/supabase'
 import { Session, Provider } from '@supabase/gotrue-js/dist/main/lib/types'
 import { Credentials } from '../types/global'
-import { abort } from 'process'
 
 
 const { supabase } = useSupabase()

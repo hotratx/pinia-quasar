@@ -3,49 +3,35 @@ import useSupabase from 'boot/supabase'
 import { Credentials } from '../types/global'
 import { Provider, User } from '@supabase/gotrue-js/dist/main/lib/types'
 
+type IUser = null | User
+
+interface State {
+  isLogging: boolean
+  user: IUser
+}
 
 const { supabase } = useSupabase()
 
 
-
-interface typeUser {
-  id?: string
-  role?: string
-  email: string
-  profile?: { [key:  string]: string }
-}
-
-
-type AccountInfo = null | typeUser
-type NewUser = null | User
-
-interface State {
-  user: AccountInfo
-  isLogging: boolean
-  newUser: NewUser
-}
-
-
-export const useStore = defineStore('authUser', {
+export const useAuth = defineStore('authUser', {
   state: (): State => ({
     user: null,
-    isLogging: false,
-    newUser: null
+    isLogging: false
   }),
 
   getters: {
-    getAccount(): null | string {
+    getAccount(): null | User {
       if (this.user) {
-        return this.user.email
+        return this.user
       }
       return null
     }
   },
-
   actions: {
-    updateUser (data: typeUser) {
+    updateUser (data: User) {
       this.user = data
       this.isLogging = true
+      //localStorage.setItem('cart', JSON.stringify(this.user))
     },
     logoutUser () {
       this.user = null
@@ -61,27 +47,17 @@ export const useStore = defineStore('authUser', {
         console.log('temmm errrorr')
         throw error.message
       }
-      // No error throw, but no user detected so send magic link
       if (!error && !user) {
         throw 'error ao tentar logar'
       }
       if (user?.email && user?.role && user?.id && user?.user_metadata) {
-        const { email, id, role, user_metadata } = user
-        const dados: typeUser = {
-          email,
-          id,
-          role,
-          profile: user_metadata
-         }
-        this.newUser = user
-        this.updateUser(dados)
+        this.updateUser(user)
       }
     },//}}}
 
     async handleSignup(credentials: Credentials) {//{{{
       try {
         const { email, password, username } = credentials
-        // prompt user if they have not filled populated their credentials
         if (!email || !password) {
           throw new Error('error no email or password')
         }
@@ -119,12 +95,13 @@ export const useStore = defineStore('authUser', {
 
     async handleUpdateUser(credentials: Credentials) {//{{{
       try {
-        const { error } = await supabase.auth.update(credentials)
+        const { error, user } = await supabase.auth.update(credentials)
         if (error) {
           alert('Error updating user info: ' + error.message)
-        } else {
+        } 
+        if (user) {
           alert('Successfully updated user info!')
-          window.location.href = '/'
+          this.updateUser(user)
         }
       } catch (error) {
         alert('Error updating user info: ')

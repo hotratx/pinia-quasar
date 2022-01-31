@@ -59,7 +59,7 @@
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
 import { useRouter } from 'vue-router'
-import { useStore } from '../store/useAuthUser'
+import { useAuth } from 'src/store/useAuthUser'
 import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 
@@ -89,7 +89,7 @@ export default defineComponent({
 
     const $q = useQuasar()
     const router = useRouter()
-    const store = useStore()
+    const store = useAuth()
 
     const leftDrawerOpen = ref(false)
     const drawer = ref(false)

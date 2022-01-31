@@ -52,7 +52,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
-import { useStore } from '../store/useAuthUser'
+import { useAuth } from '../store/useAuthUser'
 import useNotify from 'src/composables/UseNotify'
 import isEmail from 'src/composables/typeCheck'
 
@@ -64,7 +64,7 @@ export default defineComponent({
     const { notifySuccess, notifyError } = useNotify()
     
     const router = useRouter()
-    const store = useStore()
+    const store = useAuth()
 
     onMounted(() => {
       if (store.isLogging)

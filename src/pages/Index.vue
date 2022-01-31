@@ -17,14 +17,14 @@
 import { Todo, Meta } from 'components/models';
 import ExampleComponent from 'components/CompositionComponent.vue';
 import { defineComponent, ref } from 'vue';
-import { useStoreCounter } from '../store/useCounter';
+import { useCounter } from 'src/store/useCounter';
 
 
 export default defineComponent({
   name: 'PageIndex',
   components: { ExampleComponent },
   setup() {
-    const store = useStoreCounter()
+    const store = useCounter()
     console.log(store.name)
     console.log(store.doubleCounter)
     

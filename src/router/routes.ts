@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', name: 'home', component: () => import('pages/Index.vue') },
+      { path: '', name: 'home', component: () => import('pages/Me.vue') },
       { path: 'me', name: 'me', component: () => import('pages/Me.vue') },
       { path: 'pacientes', name: 'pacientes', component: () => import('pages/pacientes/List.vue') },
       { path: 'form-pacientes/:id?', name: 'form-pacientes', component: () => import('pages/pacientes/Form.vue') },

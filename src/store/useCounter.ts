@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-export const useStoreCounter = defineStore('storeId', {
+export const useCounter = defineStore('storeId', {
   // arrow function recommended for full type inference
   state: () => {
     return {

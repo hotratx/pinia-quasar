@@ -45,14 +45,14 @@
 import { defineComponent, ref } from 'vue'
 import { Credentials } from '../types/global'
 import { useRouter } from 'vue-router'
-import { useStore } from '../store/useAuthUser'
+import { useAuth } from '../store/useAuthUser'
 
 export default defineComponent({
   name: 'PageRegister',
 
   setup() {
     const router = useRouter()
-    const store = useStore()
+    const store = useAuth()
 
     const form = ref<Credentials>({
       email: '',

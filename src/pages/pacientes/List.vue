@@ -14,6 +14,7 @@
           </span>
           <q-space/>
           <q-btn 
+            v-if="$q.platform.is.desktop"
             label="Add New" 
             color='primary' 
             icon="mdi-plus" 
@@ -33,6 +34,18 @@
         </template>
       </q-table>
     </div>
+      <q-page-sticky
+      position="bottom-right"
+      :offset="[18, 18]"
+      >
+        <q-btn
+          v-if="$q.platform.is.mobile"
+          fab
+          icon="mdi-plus"
+          color="primary"
+          :to="{ name: 'form-pacientes' }"
+        />
+    </q-page-sticky>
  </q-page>
 </template>
 
@@ -59,7 +72,7 @@ const columns = [
   { name: 'actions', align: 'center', label: 'Actions', field: 'fat', sortable: true },
 ]
 
-import { defineComponent, ref, onMounted, computed } from 'vue'
+import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import useNotify from 'src/composables/UseNotify'
 import { useApi } from 'src/store/userApi'
 import { useRouter } from 'vue-router'
@@ -84,6 +97,11 @@ export default defineComponent({
     const loading = ref(true)
     const allPacientes = ref<Pacientes[]>([])
 
+    watch(api.$state , (state) => {
+      localStorage.setItem('piniaState', JSON.stringify(state))
+    },
+      {deep: true}
+    )
 
     const handleListPacientes = async () => {
       try {
@@ -105,6 +123,8 @@ export default defineComponent({
       const remove: () => void = async () => {
         await api.remove(table, paciente.id)
         notifySuccess('Paciente removido')
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        handleListPacientes()
       }
 
       try {
